@@ -1,4 +1,6 @@
-github.com/blackaichi/go-defectdojo v0.0.0-20230817125522-c0a52067e1c8 h1:QhnSCvFJ2X3s13OZjFTmtmrlMT6rI/wZ2RGag/Xw1d4=
-github.com/blackaichi/go-defectdojo v0.0.0-20230817125522-c0a52067e1c8/go.mod h1:Z6/7Ct2WnWXLxAcTitQBbb4KSESHWVpzk6aQiz3qwTU=
 github.com/google/go-cmp v0.5.7 h1:81/ik6ipDQS2aGcBfIN5dHDB36BwrStyeAQquSYCV4o=
 github.com/google/go-cmp v0.5.7/go.mod h1:n+brtR0CgQNWTVd5ZUFpTBC8YFBDLK/h/bpaJ8/DtOE=
+github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
+github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
+github.com/truemilk/go-defectdojo v0.6.1 h1:AN6+a53cmi1gwGvPlwwrdgyExY4xhyk0IGPuqBqO60Y=
+github.com/truemilk/go-defectdojo v0.6.1/go.mod h1:JRo+hAqpe8ML9OYi63OGdRreGeq2drfBJcqtSVncVpA=

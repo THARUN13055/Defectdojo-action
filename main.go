@@ -7,7 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/blackaichi/go-defectdojo/defectdojo"
+	"github.com/joho/godotenv"
+	"github.com/truemilk/go-defectdojo/defectdojo"
 )
 
 type datas struct {
@@ -18,7 +19,7 @@ type datas struct {
 	github_buildId    string
 	github_branchTag  string
 	github_commitHash string
-	reponame          string
+	ProductName       string
 }
 
 func files(filePath string) string {
@@ -43,7 +44,7 @@ func importscan(data datas) defectdojo.ImportScan {
 		ScanType:          &data.ScanType,
 		Environment:       ptrString("Development"),
 		AutoCreateContext: ptrBool(true),
-		ProductName:       &data.reponame,
+		ProductName:       &data.ProductName,
 		ProductTypeName:   ptrString("Research and Development"),
 		Version:           &data.version,
 		BuildId:           &data.github_buildId,
@@ -52,14 +53,23 @@ func importscan(data datas) defectdojo.ImportScan {
 	}
 }
 
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v\n", err)
+	}
+}
+
 func main() {
 
 	//File Path of Your report
 	//If you add Another Report You need to Add file path and also DataList
-	semgrep_file_path := ("semgrep-report.json")
-	trivy_liciense_file_path := files("trivy-license-report.json")
-	trivy_docker_file_path := files("trivy-docker-report.json")
-	Dependency_file_path := files("dependency-check-report.xml")
+	filename := os.Getenv("FILE_PATH_WITH_FILE_NAME")
+	filepath := files(filename)
+	product_name := os.Getenv("PRODUCT_NAME")
+
+	// Scan Type of the file
+	scantype := os.Getenv("SCAN_TYPE")
 
 	// Retrieve the github CI/CD environment variables
 	reponame := os.Getenv("GITHUB_REPOSITORY")
@@ -76,44 +86,14 @@ func main() {
 	// Define multiple data structs
 	dataList := []datas{
 		{
-			filePath:          trivy_liciense_file_path,
+			filePath:          filepath,
 			EngagementName:    EngagementNamed,
-			ScanType:          "Trivy Scan",
+			ScanType:          scantype,
 			version:           version,
 			github_buildId:    github_buildId,
 			github_commitHash: github_commitHash,
 			github_branchTag:  github_branchTag,
-			reponame:          reponame,
-		},
-		{
-			filePath:          trivy_docker_file_path,
-			EngagementName:    EngagementNamed,
-			ScanType:          "Trivy Scan",
-			version:           version,
-			github_buildId:    github_buildId,
-			github_commitHash: github_commitHash,
-			github_branchTag:  github_branchTag,
-			reponame:          reponame,
-		},
-		{
-			filePath:          Dependency_file_path,
-			EngagementName:    EngagementNamed,
-			ScanType:          "Dependency Check Scan",
-			version:           version,
-			github_buildId:    github_buildId,
-			github_commitHash: github_commitHash,
-			github_branchTag:  github_branchTag,
-			reponame:          reponame,
-		},
-		{
-			filePath:          semgrep_file_path,
-			EngagementName:    EngagementNamed,
-			ScanType:          "Semgrep JSON Report",
-			version:           version,
-			github_buildId:    github_buildId,
-			github_commitHash: github_commitHash,
-			github_branchTag:  github_branchTag,
-			reponame:          reponame,
+			ProductName:       product_name,
 		},
 	}
 
