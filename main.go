@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/joho/godotenv"
 	"github.com/truemilk/go-defectdojo/defectdojo"
 )
 
@@ -50,13 +49,6 @@ func importscan(data datas) defectdojo.ImportScan {
 		BuildId:           &data.github_buildId,
 		CommitHash:        &data.github_commitHash,
 		BranchTag:         &data.github_branchTag,
-	}
-}
-
-func init() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v\n", err)
 	}
 }
 
