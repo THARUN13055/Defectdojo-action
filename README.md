@@ -7,6 +7,7 @@ This is the GitHub Action which make you as easly **Upload** your Scanning Repor
 - **Sending Report files**
 - **Automatically Create Engagements**  
 - **Golang Updated package**  
+- **Single Engagement** It will Store Multiple Scanner Reports
 
 ## Use Cases
 

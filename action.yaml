@@ -21,7 +21,7 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
+  using: ''
   image: ''
   env:
     DEFECTDOJO_TOKEN: ${{ inputs.DEFECTDOJO_TOKEN }}
