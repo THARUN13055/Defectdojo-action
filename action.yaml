@@ -22,7 +22,7 @@ inputs:
 
 runs:
   using: docker
-  image: 'tharun13055/defectdojo-action:v1'
+  image: 'docker://tharun13055/defectdojo-action:v1'
   env:
     DEFECTDOJO_TOKEN: ${{ inputs.DEFECTDOJO_TOKEN }}
     DEFECTDOJO_URL: ${{ inputs.DEFECTDOJO_URL }}
