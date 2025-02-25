@@ -24,6 +24,6 @@ jobs:
         with:
           DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_TOKEN }}
           DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
-          FILE_PATH_WITH_FILE_NAME: '/result/trivy.json'
+          FILE_PATH_WITH_FILE_NAME: '/result/report.json'
           PRODUCT_NAME: 'test'
           SCAN_TYPE: 'Trivy Scan'
