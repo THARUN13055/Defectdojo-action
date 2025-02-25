@@ -17,8 +17,9 @@ RUN go mod download
 # Copy the rest of the application code
 COPY main.go ./
 
+CMD ["go","run","main.go"]
 # Build the application
-RUN go run main.go
+# RUN go build -o app main.go
 
 # # Create a new image using a distroless base
 # FROM gcr.io/distroless/static-debian12
