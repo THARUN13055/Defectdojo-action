@@ -21,14 +21,8 @@ inputs:
     required: true
 
 runs:
-  using: ''
-  image: ''
-  env:
-    DEFECTDOJO_TOKEN: ${{ inputs.DEFECTDOJO_TOKEN }}
-    DEFECTDOJO_URL: ${{ inputs.DEFECTDOJO_URL }}
-    FILE_PATH_WITH_FILE_NAME: ${{ inputs.FILE_PATH_WITH_FILE_NAME }}
-    PRODUCT_NAME: ${{ inputs.PRODUCT_NAME }}
-    SCAN_TYPE: ${{ inputs.SCAN_TYPE }}
+  using: docker
+  image: 'Dockerfile'
 
 branding:
   icon: 'upload-cloud'
