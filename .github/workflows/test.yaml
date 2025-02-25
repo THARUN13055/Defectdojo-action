@@ -13,11 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: check the path
-        run: |
-          ls -l
-          cd result 
-          ls
 
       - name: DefectDojo Report Upload Actions
         uses: ./
