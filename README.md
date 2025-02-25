@@ -70,6 +70,9 @@ jobs:
           PRODUCT_NAME: ""
           SCAN_TYPE: ""
 ```
+### Refere the FileType.md
+
+For more details on the supported file types, please refer to the [FileType.md](./FileType.md) file.
 
 ## Reports & Feedback
 
