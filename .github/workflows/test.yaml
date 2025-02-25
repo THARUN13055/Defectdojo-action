@@ -1,0 +1,37 @@
+name: testing the actions
+
+description: Here we can upload the DefectDojo report to the DefectDojo server.
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  defectdojo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: DefectDojo Report Upload Actions
+        uses: ./
+        with:
+          DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_TOKEN }}
+          DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
+          FILE_PATH_WITH_FILE_NAME: '/result/report.json'
+          PRODUCT_NAME: 'test'
+          SCAN_TYPE: 'Trivy Scan'
+      
+      - name: DefectDojo Report Upload Actions
+        uses: ./
+        with:
+          DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_TOKEN }}
+          DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
+          FILE_PATH_WITH_FILE_NAME: '/result/aqua.json'
+          PRODUCT_NAME: 'test'
+          SCAN_TYPE: 'Aqua Scan'
+
+
+
+        

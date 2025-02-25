@@ -1,0 +1,206 @@
+# DefectDojo Import Formats
+
+Upload your third party tool scan results and all the findings will be imported automatically.
+
+DefectDojo accepts:
+
+## JSON format
+- **Acunetix Scan** - Acunetix Scanner in **XML format** or Acunetix 360 Scanner in **JSON format**
+- **Anchore Engine Scan** - Anchore-CLI **JSON vulnerability report format**
+- **Anchore Enterprise Policy Check** - Anchore-CLI **JSON policy check report format**
+- **Anchore Grype** - A vulnerability scanner for container images and filesystems. **JSON report** generated with '-o json' format
+- **AnchoreCTL Policies Report** - AnchoreCTLs **JSON policies report format**
+- **AnchoreCTL Vuln Report** - AnchoreCTLs **JSON vulnerability report format**
+- **AppCheck Web Application Scanner** - Parses **JSON scans** and aggregates around title, severity, and endpoints, per-engine. Supports the following engines: NewAppCheckScannerMultiple; Unknown; NMapScanner; OpenVASScanner
+- **AppSpider Scan** - AppSpider (Rapid7) - Use the **VulnerabilitiesSummary.xml** file found in the zipped report download.
+- **Aqua Scan**
+- **Arachni Scan** - Arachni **JSON report format** (generated with `arachni_reporter --reporter 'json'`).
+- **AuditJS Scan** - AuditJS Scanning tool using SonaType OSSIndex database with **JSON output format**
+- **AWS Inspector2 Scan** - AWS Inspector2 report file can be imported in **JSON format** (aws inspector2 list-findings).
+- **AWS Prowler Scan** - Export of AWS Prowler in **CSV or JSON format**.
+- **AWS Prowler V3** - Exports from AWS Prowler v3 in **JSON format** or from Prowler v4 in **OCSF-JSON format**.
+- **AWS Security Finding Format (ASFF) Scan** - AWS Security Finding Format (ASFF). https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-syntax.html
+- **AWS Security Hub Scan** - AWS Security Hub exports in **JSON format**.
+- **Azure Security Center Recommendations Scan** - Import of Microsoft Defender for Cloud (formerly known as Azure Security Center) recommendations in **CSV format**.
+- **Bandit Scan** - **JSON report format**
+- **Bearer CLI** - Bearer CLI report file can be imported in **JSON format** (option -f json).
+- **BlackDuck API** - BlackDuck findings can be directly imported using the Synopsys BlackDuck API. An API Scan Configuration has to be setup in the Product.
+- **Blackduck Binary Analysis** - Blackduck Binary Analysis **CSV file** containing vulnerable binaries.
+- **Blackduck Component Risk** - Upload the zip file containing the **security.csv** and **files.csv**.
+- **Blackduck Hub Scan** - Upload the zip file containing the **security.csv** and **components.csv** for Security and License risks.
+- **Brakeman Scan** - Import Brakeman Scanner findings in **JSON format**.
+- **Bugcrowd API Import** - Bugcrowd submissions can be directly imported using the Bugcrowd API. An API Scan Configuration has to be setup in the Product.
+- **BugCrowd Scan** - BugCrowd **CSV report format**
+- **Bundler-Audit Scan** - 'bundler-audit check' output (in plain text)
+- **Burp Dastardly Scan** - Import Burp Dastardly **XML files**.
+- **Burp Enterprise Scan** - Import Burp Enterprise Edition findings in **HTML format**
+- **Burp GraphQL API** - Import Burp Enterprise Edition findings from the **GraphQL API**
+- **Burp REST API** - Import Burp REST API scan data in **JSON format** (/scan/[task_id] endpoint).
+- **Burp Scan** - When the Burp report is generated, the recommended option is Base64 encoding both the request and response fields. These fields will be processed and made available in the 'Finding View' page.
+- **CargoAudit Scan** - Import **JSON output** for cargo audit scan report.
+- **Checkmarx CxFlow SAST** - Detailed Report. Import all vulnerabilities from checkmarx without aggregation
+- **Checkmarx One Scan** - Checkmarx One Scan
+- **Checkmarx OSA** - Checkmarx Open Source Analysis for dependencies (**json**). Generate with `jq -s . CxOSAVulnerabilities.json CxOSALibraries.json`
+- **Checkmarx Scan** - Simple Report. Aggregates vulnerabilities per categories, cwe, name, sinkFilename
+- **Checkmarx Scan detailed** - Detailed Report. Import all vulnerabilities from checkmarx without aggregation
+- **Checkov Scan** - Import **JSON reports** of Infrastructure as Code vulnerabilities.
+- **Chef Inspect Log** - Chef Inspect log file
+- **Clair Scan** - Import **JSON reports** of Docker image vulnerabilities from clair or clair klar client.
+- **Cloudsploit Scan** - Cloudsploit report file can be imported in **JSON format** (option --json).
+- **Cobalt.io API Import** - Cobalt.io findings can be directly imported using the Cobalt.io API. An API Scan Configuration has to be setup in the Product.
+- **Cobalt.io Scan** - **CSV Report**
+- **Codechecker Report native** - Import Codechecker Report in native **JSON format**.
+- **Contrast Scan** - **CSV Report**
+- **Coverity API** - Import Coverity API view data in **JSON format** (/api/viewContents/issues endpoint).
+- **Coverity Scan JSON Report** - Import Coverity Scan **JSON output** (coverity scan --local-format json --local <json_file>)
+- **Crashtest Security JSON File** - **JSON Report**
+- **Crashtest Security XML File** - **XML Report**
+- **CredScan Scan** - Import **CSV output** of CredScan scan report.
+- **Crunch42 Scan** - Import **JSON output** of Crunch42 scan report.
+- **CycloneDX Scan** - Support CycloneDX **XML and JSON report formats** (compatible with 1.4).
+- **DawnScanner Scan** - Dawnscanner (-j) output file can be imported in **JSON format**.
+- **Deepfence Threatmapper Report** - Deepfence Threatmapper report in **XLSX format**.
+- **Dependency Check Scan** - OWASP Dependency Check output can be imported in **Xml format**.
+- **Dependency Track Finding Packaging Format (FPF) Export** - The Finding Packaging Format (FPF) from OWASP Dependency Track can be imported in **JSON format**. See here for more info on this JSON format.
+- **Detect-secrets Scan** - Import **JSON output** for detect-secrets scan report.
+- **docker-bench-security Scan** - Import **JSON reports** of Docker CIS benchmark scans.
+- **Dockle Scan** - Import **JSON output** for Dockle scan report.
+- **DrHeader JSON Importer** - Import result of DrHeader **JSON output**.
+- **DSOP Scan** - Import **XLSX findings** from DSOP vulnerability scan pipelines.
+- **Edgescan Scan** - Edgescan findings can be imported by **API or JSON file**.
+- **ESLint Scan** - **JSON report format**
+- **Fortify Scan** - Import Findings in **FPR or XML file format**.
+- **Generic Findings Import** - Import Generic findings in **CSV or JSON format**.
+- **Ggshield Scan** - Import Ggshield Scan findings in **JSON format**.
+- **Github Vulnerability Scan** - Import vulnerabilities from **Github API** (GraphQL Query)
+- **GitLab API Fuzzing Report Scan** - GitLab API Fuzzing Report report file can be imported in **JSON format** (option --json).
+- **GitLab Container Scan** - GitLab Container Scan report file can be imported in **JSON format** (option --json).
+- **GitLab DAST Report** - GitLab DAST Report in **JSON format** (option --json).
+- **GitLab Dependency Scanning Report** - Import GitLab SAST Report vulnerabilities in **JSON format**.
+- **GitLab SAST Report** - Import GitLab SAST Report vulnerabilities in **JSON format**.
+- **GitLab Secret Detection Report** - GitLab Secret Detection Report file can be imported in **JSON format** (option --json).
+- **Gitleaks Scan** - Import Gitleaks Scan findings in **JSON format**.
+- **Google Cloud Artifact Vulnerability Scan** - Import Google Cloud Artifact Vulnerability scans in **JSON format**.
+- **Gosec Scanner** - Import Gosec Scanner findings in **JSON format**.
+- **Govulncheck Scanner** - Import Govulncheck Scanner findings in **JSON format**.
+- **HackerOne Cases** - Import HackerOne cases findings in **JSON format**.
+- **Hadolint Dockerfile check** - Import Hadolint Dockerfile check findings in **JSON format**.
+- **Harbor Vulnerability Scan** - Import vulnerabilities from **Harbor API**.
+- **HCL AppScan on Cloud SAST XML** - Import **XML output** of HCL AppScan on Cloud SAST
+- **HCLAppScan XML** - Import **XML output** of HCL AppScan.
+- **Horusec Scan** - **JSON output** of Horusec cli.
+- **Humble Json Importer** - **JSON output** of Humble scan.
+- **HuskyCI Report** - Import HuskyCI Report vulnerabilities in **JSON format**.
+- **Hydra Scan** - Hydra Scan can be imported in **JSON format**.
+- **IBM AppScan DAST** - **XML file** from IBM App Scanner.
+- **Immuniweb Scan** - **XML Scan Result File** from Imuniweb Scan.
+- **IntSights Report** - IntSights report file can be imported in **JSON format**.
+- **Invicti Scan** - Invicti **JSON format**.
+- **JFrog Xray API Summary Artifact Scan** - Import Xray findings in **JSON format** from the JFrog Xray API Summary/Artifact JSON response.
+- **JFrog Xray On Demand Binary Scan** - Import Xray findings in **JSON format**.
+- **JFrog Xray Scan** - Import Xray findings in **JSON format**.
+- **JFrog Xray Unified Scan** - Import Xray Unified (i.e. Xray version 3+) findings in **JSON format**.
+- **KICS Scan** - Import **JSON output** for KICS scan report.
+- **Kiuwan SCA Scan** - Import Kiuwan Insights Scan in **JSON format**. Export as JSON using Kiuwan REST API.
+- **Kiuwan Scan** - Import Kiuwan Scan in **CSV format**. Export as CSV Results on Kiuwan.
+- **KrakenD Audit Scan** - Import **JSON reports** of KrakenD Audit Scans.
+- **kube-bench Scan** - Import **JSON reports** of Kubernetes CIS benchmark scans.
+- **Kubeaudit Scan** - Import **JSON reports** of Kubeaudit Scans.
+- **KubeHunter Scan** - KubeHunter **JSON** vulnerability report format.
+- **Kubescape JSON Importer** - Import result of Kubescape **JSON output**.
+- **Legitify Scan** - Legitify output file can be imported in **JSON format**.
+- **Mend Scan** - Import **JSON report**
+- **Meterian Scan** - Meterian **JSON report** output file can be imported.
+- **Microfocus Webinspect Scan** - Import **XML report**
+- **MobSF Scan** - Export a **JSON** file using the API, api/v1/report_json.
+- **MobSF Scorecard Scan** - Export a **JSON** file using the API, api/v1/report_json.
+- **Mobsfscan Scan** - Import **JSON report** for mobsfscan report file.
+- **Mozilla Observatory Scan** - Import **JSON report**.
+- **MSDefender Parser** - MSDefender findings can be retrieved using the REST API
+- **Nancy Scan** - Nancy output file (go list -json -deps ./... | nancy sleuth > nancy.json) can be imported in **JSON format**.
+- **Netsparker Scan** - Netsparker **JSON format**.
+- **NeuVector (compliance)** - Imports compliance scans returned by REST API.
+- **NeuVector (REST)** - **JSON output** of /v1/scan/{entity}/{id} endpoint.
+- **Nexpose Scan** - Use the full **XML export** template from Nexpose.
+- **Nikto Scan** - **XML output** (old and new nxvmlversion="1.2" type) or **JSON output**
+- **Nmap Scan** - **XML output** (use -oX)
+- **Node Security Platform Scan** - Node Security Platform (NSP) output file can be imported in **JSON format**.
+- **Nosey Parker Scan** - Nosey Parker report file can be imported in **JSON Lines format** (option --jsonl). Supports v0.16.0 and v0.22.0 of https://github.com/praetorian-inc/noseyparker
+- **NPM Audit Scan** - NPM Audit Scan json output up to v6 can be imported in **JSON format**.
+- **NPM Audit v7+ Scan** - NPM Audit Scan json output from v7 and above.
+- **Nuclei Scan** - Import **JSON output** for nuclei scan report.
+- **Openscap Vulnerability Scan** - Import Openscap Vulnerability Scan in **XML formats**.
+- **OpenVAS Parser** - Import **CSV or XML output** of Greenbone OpenVAS report.
+- **ORT evaluated model Importer** - Import Outpost24 endpoint vulnerability scan in **XML format**.
+- **OssIndex Devaudit SCA Scan Importer** - Import OssIndex Devaudit SCA Scan in **json format**.
+- **OSV Scan** - OSV scan output can be imported in **JSON format** (option --format json).
+- **Outpost24 Scan** - Import Outpost24 endpoint vulnerability scan in **XML format**.
+- **PHP Security Audit v2** - Import PHP Security Audit v2 Scan in **JSON format**.
+- **PHP Symfony Security Check** - Import results from the PHP Symfony Security Checker by Sensioslabs.
+- **pip-audit Scan** - Import pip-audit **JSON scan report**.
+- **PMD Scan** - **CSV Report**
+- **Popeye Scan** - Popeye report file can be imported in **JSON format** (option --json).
+- **Progpilot Scan** - Progpilot **JSON** vulnerability report format.
+- **PTART Report** - Import a PTART report file in **JSON format**.
+- **PWN SAST** - Import pwn_sast Driver findings in **JSON format**.
+- **Qualys Hacker Guardian Scan** - Qualys Hacker Guardian report file can be imported in **CSV format**.
+- **Qualys Infrastructure Scan (WebGUI XML)** - Qualys WebGUI output files can be imported in **XML format**.
+- **Qualys Scan** - Qualys WebGUI output files can be imported in **XML format**.
+- **Qualys Webapp Scan** - Qualys WebScan output files can be imported in **XML format**.
+- **Rapplex Scan** - Import Rapplex **JSON report**.
+- **Red Hat Satellite** - **JSON Output** of Red Hat Satellite.
+- **Retire.js Scan** - Retire.js JavaScript scan (--js) output file can be imported in **JSON format**.
+- **Risk Recon API Importer** - Risk Recon ApI will be accessed to gather finding information. Report format here.
+- **Rubocop Scan** - Import Rubocop **JSON scan report** (with option -f json).
+- **Rusty Hog Scan** - Rusty Hog Scan - **JSON Report**
+- **SARIF** - SARIF report file can be imported in **SARIF format**.
+- **Scantist Scan** - Import Scantist Dependency Scanning Report vulnerabilities in **JSON format**.
+- **Scout Suite Scan** - JS file in scoutsuite-results/scoutsuite_results_*.js.
+- **Semgrep JSON Report** - Import Semgrep output (--json)
+- **SKF Scan** - Output of SKF Sprint summary export.
+- **Snyk Code Scan** - Snyk output file (snyk test --json > snyk.json) can be imported in **JSON format**.
+- **Snyk Scan** - Snyk output file (snyk test --json > snyk.json) can be imported in **JSON format**.
+- **Solar Appscreener Scan** - Solar Appscreener report file can be imported in **CSV format** from Detailed_Results.csv.
+- **SonarQube API Import** - SonarQube findings can be directly imported using the SonarQube API. An API Scan Configuration has to be setup in the Product.
+- **SonarQube Scan** - Aggregates findings per cwe, title, description, file_path. SonarQube output file can be imported in **HTML format or JSON format**. You can get the JSON output directly if you use the SonarQube API or generate with https://github.com/soprasteria/sonar-report version >= 1.1.0, recommend version >= 3.1.2
+- **SonarQube Scan detailed** - Import all findings from sonarqube html report or JSON format. SonarQube output file can be imported in **HTML format or JSON format**. Generate with https://github.com/soprasteria/sonar-report version >= 1.1.0, recommend version >= 3.1.2
+- **Sonatype Application Scan** - Can be imported in **JSON format**
+- **SpotBugs Scan** - **XML report** of textui cli.
+- **SSH Audit Importer** - Import result of SSH Audit **JSON output**.
+- **SSL Labs Scan** - **JSON Output** of ssllabs-scan cli.
+- **Sslscan** - Import **XML output** of sslscan report.
+- **Sslyze Scan** - Import **XML report** of SSLyze version 2 scan.
+- **SSLyze Scan (JSON)** - Import **JSON report** of SSLyze version 3 and higher.
+- **StackHawk HawkScan** - StackHawk webhook event can be imported in **JSON format**.
+- **Sysdig Vulnerability Report** - Import of Sysdig Pipeline, Registry and Runtime Vulnerability Report Scans in **CSV format** or a Sysdig UI **JSON Report**
+- **Talisman Scan** - Import Talisman Scan findings in **JSON format**.
+- **Tenable Scan** - Reports can be imported as **CSV or .nessus (XML)** report formats.
+- **Terrascan Scan** - Import **JSON output** for Terrascan scan report.
+- **Testssl Scan** - Import **CSV output** of testssl scan report.
+- **TFSec Scan** - Import **JSON output** for TFSec scan report.
+- **Threagile risks report** - Threagile Risks Report in **JSON format** (risks.json).
+- **ThreatComposer Scan** - ThreatComposer report file can be imported in **JSON format**.
+- **Trivy Operator Scan** - Import trivy-operator **JSON scan report**.
+- **Trivy Scan** - Import trivy **JSON scan report**.
+- **Trufflehog Scan** - **JSON Output** of Trufflehog. Supports version 2 and 3 of https://github.com/trufflesecurity/trufflehog
+- **Trufflehog3 Scan** - **JSON Output** of Trufflehog3, a fork of TruffleHog located at https://github.com/feeltheajf/truffleHog3
+- **Trustwave Fusion API Scan** - Trustwave Fusion API report file can be imported in **JSON format**
+- **Trustwave Scan (CSV)** - **CSV output** of Trustwave vulnerability scan.
+- **Twistlock Image Scan** - **JSON output** of twistcli image scan or CSV.
+- **VCG Scan** - VCG output can be imported in **CSV or Xml formats**.
+- **Veracode Scan** - Reports can be imported as **JSON or XML report formats**.
+- **Veracode SourceClear Scan** - Veracode SourceClear **CSV or JSON report format**
+- **Vulners** - Import Vulners Audit reports in **JSON**.
+- **Wapiti Scan** - Import **XML report**
+- **Wazuh** - Wazuh
+- **WFuzz JSON report** - Import WFuzz findings in **JSON format**.
+- **Whispers Scan** - Whispers report file can be imported in **JSON format** (option --json).
+- **WhiteHat Sentinel** - WhiteHat Sentinel output from api/vuln/query_site can be imported in **JSON format**.
+- **Wiz Scan** - Wiz scan results in **csv file format**.
+- **Wizcli Dir Scan** - Wizcli Dir Scan results in **JSON file format**.
+- **Wizcli IaC Scan** - Wizcli IaC Scan results in **JSON file format**.
+- **Wizcli Img Scan** - Wizcli Img report file can be imported in **JSON format**.
+- **Wpscan** - Import **JSON report**
+- **Xanitizer Scan** - Import **XML findings list report**, preferably with parameter 'generateDetailsInFindingsListReport=true'.
+- **Yarn Audit Scan** - Yarn Audit Scan output file can be imported in **JSON format**.
+- **ZAP Scan** - ZAP **XML report format**.

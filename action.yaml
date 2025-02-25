@@ -1,0 +1,35 @@
+name: DefectDojo Report Upload Actions
+
+description: Here we can upload the DefectDojo report to the DefectDojo server.
+
+author: 'tharun13055'
+inputs:
+  DEFECTDOJO_TOKEN:
+    description: 'DefectDojo API token'
+    required: true
+  DEFECTDOJO_URL:
+    description: 'URL of the DefectDojo server'
+    required: true
+  FILE_PATH_WITH_FILE_NAME:
+    description: 'Path to the file to be uploaded'
+    required: true
+  PRODUCT_NAME:
+    description: 'Name of the product in DefectDojo'
+    required: true
+  SCAN_TYPE:
+    description: 'Type of scan'
+    required: true
+
+runs:
+  using: docker
+  image: 'tharun13055/defectdojo-action:v1'
+  env:
+    DEFECTDOJO_TOKEN: ${{ inputs.DEFECTDOJO_TOKEN }}
+    DEFECTDOJO_URL: ${{ inputs.DEFECTDOJO_URL }}
+    FILE_PATH_WITH_FILE_NAME: ${{ inputs.FILE_PATH_WITH_FILE_NAME }}
+    PRODUCT_NAME: ${{ inputs.PRODUCT_NAME }}
+    SCAN_TYPE: ${{ inputs.SCAN_TYPE }}
+
+branding:
+  icon: 'upload-cloud'
+  color: 'orange'
