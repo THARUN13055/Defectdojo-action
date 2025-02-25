@@ -17,15 +17,15 @@ RUN go mod download
 # Copy the rest of the application code
 COPY main.go ./
 
-CMD ["go","run","main.go"]
+# CMD ["go","run","main.go"]
 # Build the application
-# RUN go build -o app main.go
+RUN go build -o app main.go
 
-# # Create a new image using a distroless base
-# FROM gcr.io/distroless/static-debian12
+# Create a new image using a distroless base
+FROM gcr.io/distroless/static-debian12
 
-# # Copy the built application from the build stage
-# COPY --from=build /defectdojo/app /
+# Copy the built application from the build stage
+COPY --from=build /defectdojo/app /
 
-# # Set the command to run the application
-# CMD ["/app"]
+# Set the command to run the application
+CMD ["/app"]
