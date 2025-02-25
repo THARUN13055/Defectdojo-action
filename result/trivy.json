@@ -1,0 +1,2272 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2024-07-31T08:36:26.411434275Z",
+  "ArtifactName": "/app",
+  "ArtifactType": "filesystem",
+  "Metadata": {
+    "ImageConfig": {
+      "architecture": "",
+      "created": "0001-01-01T00:00:00Z",
+      "os": "",
+      "rootfs": {
+        "type": "",
+        "diff_ids": null
+      },
+      "config": {}
+    }
+  },
+  "Results": [
+    {
+      "Target": "app/Packages/Razorpay/composer.lock",
+      "Class": "lang-pkgs",
+      "Type": "composer"
+    },
+    {
+      "Target": "composer.lock",
+      "Class": "lang-pkgs",
+      "Type": "composer",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2023-50262",
+          "PkgID": "dompdf/dompdf@v2.0.3",
+          "PkgName": "dompdf/dompdf",
+          "PkgIdentifier": {
+            "PURL": "pkg:composer/dompdf/dompdf@v2.0.3",
+            "UID": "ec10acbef5b21e9f"
+          },
+          "InstalledVersion": "v2.0.3",
+          "FixedVersion": "2.0.4",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "nvd",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-50262",
+          "DataSource": {
+            "ID": "php-security-advisories",
+            "Name": "PHP Security Advisories Database",
+            "URL": "https://github.com/FriendsOfPHP/security-advisories"
+          },
+          "Title": "Dompdf is an HTML to PDF converter for PHP. When parsing SVG images Do ...",
+          "Description": "Dompdf is an HTML to PDF converter for PHP. When parsing SVG images Dompdf performs an initial validation to ensure that paths within the SVG are allowed. One of the validations is that the SVG document does not reference itself. However, prior to version 2.0.4, a recursive chained using two or more SVG documents is not correctly validated. Depending on the system configuration and attack pattern this could exhaust the memory available to the executing process and/or to the server itself.\n\nphp-svg-lib, when run in isolation, does not support SVG references for `image` elements. However, when used in combination with Dompdf, php-svg-lib will process SVG images referenced by an `image` element. Dompdf currently includes validation to prevent self-referential `image` references, but a chained reference is not checked. A malicious actor may thus trigger infinite recursion by chaining references between two or more SVG images.\n\nWhen Dompdf parses a malicious payload, it will crash due after exceeding the allowed execution time or memory usage. An attacker sending multiple request to a system can potentially cause resource exhaustion to the point that the system is unable to handle incoming request.\n\nVersion 2.0.4 contains a fix for this issue.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-20",
+            "CWE-674"
+          ],
+          "VendorSeverity": {
+            "ghsa": 2,
+            "nvd": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+              "V3Score": 5.3
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://github.com/FriendsOfPHP/security-advisories/blob/master/dompdf/dompdf/CVE-2023-50262.yaml",
+            "https://github.com/dompdf/dompdf",
+            "https://github.com/dompdf/dompdf/blob/v2.0.3/src/Image/Cache.php#L136-L153",
+            "https://github.com/dompdf/dompdf/commit/41cbac16f3cf56affa49f06e8dae66d0eac2b593",
+            "https://github.com/dompdf/dompdf/security/advisories/GHSA-3qx2-6f78-w2j2",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-50262"
+          ],
+          "PublishedDate": "2023-12-13T21:15:09.117Z",
+          "LastModifiedDate": "2023-12-19T15:28:42.343Z"
+        },
+        {
+          "VulnerabilityID": "GHSA-97m3-52wr-xvv2",
+          "PkgID": "phenx/php-svg-lib@0.5.0",
+          "PkgName": "phenx/php-svg-lib",
+          "PkgIdentifier": {
+            "PURL": "pkg:composer/phenx/php-svg-lib@0.5.0",
+            "UID": "edb5fa6b4d5b5d9f"
+          },
+          "InstalledVersion": "0.5.0",
+          "FixedVersion": "0.5.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://github.com/advisories/GHSA-97m3-52wr-xvv2",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory Composer",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Acomposer"
+          },
+          "Title": "Dompdf's usage of vulnerable version of phenx/php-svg-lib leads to restriction bypass and potential RCE",
+          "Description": "### Summary\nA lack of sanitization/check in the font path returned by php-svg-lib, in the case of a inline CSS font defined, that will be used by Cpdf to open a font will be passed to a `file_exists` call, which is sufficient to trigger metadata unserializing on a PHAR file, through the phar:// URL handler on PHP \u003c 8.0. On other versions, it might be used as a way to get a SSRF through, for example, ftp, not restricted by authorized protocols configured on dompdf.\n\n### Details\nThe problem lies on the `openFont` function of the `lib/Cpdf.php` library, when the `$font` variable passed by php-svg-lib isn't checked correctly. A path is crafted through $name and $dir, which are two values that can be controlled through CSS : \n\n```\n$name = basename($font);\n$dir = dirname($font);\n[...]\n$metrics_name = \"$name.ufm\";\n[...]\n\nif (!isset($this-\u003efonts[$font]) \u0026\u0026 file_exists(\"$dir/$metrics_name\")) {\n```\n\nPassing a font named `phar:///foo/bar/baz.phar/test` will set the value of $name to `test` and $dir to `phar:///foo/bar/baz.phar`, which once reconstructed will call file_exists on `phar:///foo/bar/baz.phar/test.ufm`. That allows to deserialize the `baz.phar` arbitrary file that contains a `test.ufm` file in the archive.\n\n\n### PoC\n\nConsider the following, minimal PHP code : \n\n```\n\u003c?php\nrequire('vendor/autoload.php');\n\nuse Dompdf\\Dompdf;\n$dompdf = new Dompdf();\n$dompdf-\u003eloadHtml($_GET['payload']);\n$dompdf-\u003esetPaper('A4', 'landscape');\n$options = $dompdf-\u003egetOptions();\n$options-\u003esetAllowedProtocols([]);\n$dompdf-\u003erender();\n$dompdf-\u003estream();\n```\n\nWith payload being this html file : \n\n```\n\u003chtml\u003e\n\u003cimg src=\"data:image/png;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj4NCiAgICA8dGV4dCB4PSIyMCIgeT0iMzUiIHN0eWxlPSJjb2xvcjpyZWQ7Zm9udC1mYW1pbHk6ZnRwOi8vYmxha2wuaXM6MjEveC95OyI+TXk8L3RleHQ+DQo8L3N2Zz4=\"\u003e\u003c/img\u003e\n\u003c/html\u003e\n```\n\nwith the base64 image being : \n```\n\u003c?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?\u003e\n\u003csvg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"200\" height=\"200\"\u003e\n    \u003ctext x=\"20\" y=\"35\" style=\"color:red;font-family:ftp://blakl.is:21/x/y;\"\u003eMy\u003c/text\u003e\n\u003c/svg\u003e\n```\n\nA connection on ftp://blakl.is:21/ will occur, bypassing the allowed protocols.\n\n### Impact\nAn attacker might be able to exploit the vulnerability to call arbitrary URL with arbitrary protocols, if they can force dompdf to parse a SVG with an inline CSS property using a malicious font-family. In PHP versions before 8.0.0, it leads to arbitrary unserialize, that will leads at the very least to an arbitrary file deletion, and might leads to remote code execution, depending on classes that are available.",
+          "Severity": "CRITICAL",
+          "VendorSeverity": {
+            "ghsa": 4
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+              "V3Score": 10
+            }
+          },
+          "References": [
+            "https://github.com/dompdf/dompdf",
+            "https://github.com/dompdf/dompdf/security/advisories/GHSA-97m3-52wr-xvv2",
+            "https://github.com/dompdf/php-svg-lib/commit/732faa9fb4309221e2bd9b2fda5de44f947133aa",
+            "https://github.com/dompdf/php-svg-lib/security/advisories/GHSA-f3qr-qr4x-j273"
+          ]
+        }
+      ]
+    },
+    {
+      "Target": "package-lock.json",
+      "Class": "lang-pkgs",
+      "Type": "npm",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2021-3749",
+          "PkgID": "axios@0.19.0",
+          "PkgName": "axios",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/axios@0.19.0",
+            "UID": "88903f1752eb802e"
+          },
+          "InstalledVersion": "0.19.0",
+          "FixedVersion": "0.21.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-3749",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-axios: Regular expression denial of service in trim function",
+          "Description": "axios is vulnerable to Inefficient Regular Expression Complexity",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333",
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:C",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 7.8,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-3749",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf",
+            "https://github.com/axios/axios",
+            "https://github.com/axios/axios/commit/5b457116e31db0e88fede6c428e969e87f290929",
+            "https://github.com/axios/axios/pull/3980",
+            "https://huntr.dev/bounties/1e8f07fc-c384-4ff9-8498-0690de2e8c31",
+            "https://huntr.dev/bounties/1e8f07fc-c384-4ff9-8498-0690de2e8c31/",
+            "https://lists.apache.org/thread.html/r075d464dce95cd13c03ff9384658edcccd5ab2983b82bfc72b62bb10%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r075d464dce95cd13c03ff9384658edcccd5ab2983b82bfc72b62bb10@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r216f0fd0a3833856d6a6a1fada488cadba45f447d87010024328ccf2%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r216f0fd0a3833856d6a6a1fada488cadba45f447d87010024328ccf2@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r3ae6d2654f92c5851bdb73b35e96b0e4e3da39f28ac7a1b15ae3aab8%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r3ae6d2654f92c5851bdb73b35e96b0e4e3da39f28ac7a1b15ae3aab8@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r4bf1b32983f50be00f9752214c1b53738b621be1c2b0dbd68c7f2391%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r4bf1b32983f50be00f9752214c1b53738b621be1c2b0dbd68c7f2391@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r7324ecc35b8027a51cb6ed629490fcd3b2d7cf01c424746ed5744bf1%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r7324ecc35b8027a51cb6ed629490fcd3b2d7cf01c424746ed5744bf1@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r74d0b359408fff31f87445261f0ee13bdfcac7d66f6b8e846face321%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/r74d0b359408fff31f87445261f0ee13bdfcac7d66f6b8e846face321@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/ra15d63c54dc6474b29f72ae4324bcb03038758545b3ab800845de7a1%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/ra15d63c54dc6474b29f72ae4324bcb03038758545b3ab800845de7a1@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rc263bfc5b53afcb7e849605478d73f5556eb0c00d1f912084e407289%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rc263bfc5b53afcb7e849605478d73f5556eb0c00d1f912084e407289@%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rfa094029c959da0f7c8cd7dc9c4e59d21b03457bf0cedf6c93e1bb0a%40%3Cdev.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rfa094029c959da0f7c8cd7dc9c4e59d21b03457bf0cedf6c93e1bb0a@%3Cdev.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rfc5c478053ff808671aef170f3d9fc9d05cc1fab8fb64431edc66103%40%3Ccommits.druid.apache.org%3E",
+            "https://lists.apache.org/thread.html/rfc5c478053ff808671aef170f3d9fc9d05cc1fab8fb64431edc66103@%3Ccommits.druid.apache.org%3E",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-3749",
+            "https://www.cve.org/CVERecord?id=CVE-2021-3749",
+            "https://www.npmjs.com/package/axios",
+            "https://www.oracle.com/security-alerts/cpujul2022.html"
+          ],
+          "PublishedDate": "2021-08-31T11:15:07.89Z",
+          "LastModifiedDate": "2023-11-07T03:38:14.02Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-4068",
+          "PkgID": "braces@2.3.2",
+          "PkgName": "braces",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/braces@2.3.2",
+            "UID": "9eb14a49485c4ac9"
+          },
+          "InstalledVersion": "2.3.2",
+          "FixedVersion": "3.0.3",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-4068",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "braces: fails to limit the number of characters it can handle",
+          "Description": "The NPM package `braces`, versions prior to 3.0.3, fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends \"imbalanced braces\" as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1050",
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-4068",
+            "https://devhub.checkmarx.com/cve-details/CVE-2024-4068",
+            "https://devhub.checkmarx.com/cve-details/CVE-2024-4068/",
+            "https://github.com/micromatch/braces",
+            "https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308",
+            "https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff",
+            "https://github.com/micromatch/braces/issues/35",
+            "https://github.com/micromatch/braces/pull/37",
+            "https://github.com/micromatch/braces/pull/40",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-4068",
+            "https://www.cve.org/CVERecord?id=CVE-2024-4068"
+          ],
+          "PublishedDate": "2024-05-14T15:42:48.66Z",
+          "LastModifiedDate": "2024-07-03T02:07:03.943Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-4068",
+          "PkgID": "braces@3.0.2",
+          "PkgName": "braces",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/braces@3.0.2",
+            "UID": "44cbc23a891ce0bf"
+          },
+          "InstalledVersion": "3.0.2",
+          "FixedVersion": "3.0.3",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-4068",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "braces: fails to limit the number of characters it can handle",
+          "Description": "The NPM package `braces`, versions prior to 3.0.3, fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends \"imbalanced braces\" as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1050",
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-4068",
+            "https://devhub.checkmarx.com/cve-details/CVE-2024-4068",
+            "https://devhub.checkmarx.com/cve-details/CVE-2024-4068/",
+            "https://github.com/micromatch/braces",
+            "https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308",
+            "https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff",
+            "https://github.com/micromatch/braces/issues/35",
+            "https://github.com/micromatch/braces/pull/37",
+            "https://github.com/micromatch/braces/pull/40",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-4068",
+            "https://www.cve.org/CVERecord?id=CVE-2024-4068"
+          ],
+          "PublishedDate": "2024-05-14T15:42:48.66Z",
+          "LastModifiedDate": "2024-07-03T02:07:03.943Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-38900",
+          "PkgID": "decode-uri-component@0.2.0",
+          "PkgName": "decode-uri-component",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/decode-uri-component@0.2.0",
+            "UID": "19c4370c7835aa14"
+          },
+          "InstalledVersion": "0.2.0",
+          "FixedVersion": "0.2.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-38900",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "decode-uri-component: improper input validation resulting in DoS",
+          "Description": "decode-uri-component 0.2.0 is vulnerable to Improper Input Validation resulting in DoS.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-20"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "ghsa": 3,
+            "nvd": 3,
+            "oracle-oval": 1,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:1743",
+            "https://access.redhat.com/security/cve/CVE-2022-38900",
+            "https://bugzilla.redhat.com/2134609",
+            "https://bugzilla.redhat.com/2156324",
+            "https://bugzilla.redhat.com/2165824",
+            "https://bugzilla.redhat.com/2168631",
+            "https://bugzilla.redhat.com/2170644",
+            "https://bugzilla.redhat.com/2171935",
+            "https://bugzilla.redhat.com/2172217",
+            "https://errata.almalinux.org/8/ALSA-2023-1743.html",
+            "https://github.com/SamVerschueren/decode-uri-component",
+            "https://github.com/SamVerschueren/decode-uri-component/commit/746ca5dcb6667c5d364e782d53c542830e4c10b9",
+            "https://github.com/SamVerschueren/decode-uri-component/issues/5",
+            "https://github.com/SamVerschueren/decode-uri-component/releases/tag/v0.2.1",
+            "https://github.com/advisories/GHSA-w573-4hg7-7wgq",
+            "https://github.com/sindresorhus/query-string/issues/345",
+            "https://linux.oracle.com/cve/CVE-2022-38900.html",
+            "https://linux.oracle.com/errata/ELSA-2023-6316.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/ERN6YE3DS7NBW7UH44SCJBMNC2NWQ7SM/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KAC5KQ2SEWAMQ6UZAUBZ5KXKEOESH375/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QABOUA2I542UTANVZIVFKWMRYVHLV32D/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UW4SCMT3SEUFVIL7YIADQ5K36GJEO6I5/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/VNV2GNZXOTEDAJRFH3ZYWRUBGIVL7BSU/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ERN6YE3DS7NBW7UH44SCJBMNC2NWQ7SM",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/KAC5KQ2SEWAMQ6UZAUBZ5KXKEOESH375",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QABOUA2I542UTANVZIVFKWMRYVHLV32D",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UW4SCMT3SEUFVIL7YIADQ5K36GJEO6I5",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/VNV2GNZXOTEDAJRFH3ZYWRUBGIVL7BSU",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-38900",
+            "https://www.cve.org/CVERecord?id=CVE-2022-38900"
+          ],
+          "PublishedDate": "2022-11-28T13:15:10.033Z",
+          "LastModifiedDate": "2023-11-07T03:50:17.22Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-36048",
+          "PkgID": "engine.io@3.2.1",
+          "PkgName": "engine.io",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/engine.io@3.2.1",
+            "UID": "130088f70eb081c0"
+          },
+          "InstalledVersion": "3.2.1",
+          "FixedVersion": "3.6.0",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-36048",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "yarnpkg-socket.io/engine.io: allows attackers to cause a denial of service (resource consumption) via a POST request to the long polling transport",
+          "Description": "Engine.IO before 4.0.0 allows attackers to cause a denial of service (resource consumption) via a POST request to the long polling transport.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-36048",
+            "https://blog.caller.xyz/socketio-engineio-dos",
+            "https://blog.caller.xyz/socketio-engineio-dos/",
+            "https://github.com/bcaller/kill-engine-io",
+            "https://github.com/socketio/engine.io",
+            "https://github.com/socketio/engine.io/commit/734f9d1268840722c41219e69eb58318e0b2ac6b",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-36048",
+            "https://snyk.io/vuln/SNYK-JS-ENGINEIO-1056749",
+            "https://www.cve.org/CVERecord?id=CVE-2020-36048"
+          ],
+          "PublishedDate": "2021-01-08T00:15:11.093Z",
+          "LastModifiedDate": "2021-01-12T03:55:58.96Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-0155",
+          "PkgID": "follow-redirects@1.5.10",
+          "PkgName": "follow-redirects",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/follow-redirects@1.5.10",
+            "UID": "c8e144f988b73616"
+          },
+          "InstalledVersion": "1.5.10",
+          "FixedVersion": "1.14.7",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-0155",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "follow-redirects: Exposure of Private Personal Information to an Unauthorized Actor",
+          "Description": "follow-redirects is vulnerable to Exposure of Private Personal Information to an Unauthorized Actor",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-359"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 2,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H",
+              "V3Score": 8
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:N/A:N",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+              "V2Score": 4.3,
+              "V3Score": 6.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+              "V3Score": 6.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2022-0155",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf",
+            "https://github.com/follow-redirects/follow-redirects",
+            "https://github.com/follow-redirects/follow-redirects/commit/8b347cbcef7c7b72a6e9be20f5710c17d6163c22",
+            "https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406",
+            "https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-0155",
+            "https://www.cve.org/CVERecord?id=CVE-2022-0155"
+          ],
+          "PublishedDate": "2022-01-10T20:15:08.177Z",
+          "LastModifiedDate": "2022-10-28T17:54:29.403Z"
+        },
+        {
+          "VulnerabilityID": "GHSA-6x33-pw7p-hmpq",
+          "PkgID": "http-proxy@1.15.2",
+          "PkgName": "http-proxy",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/http-proxy@1.15.2",
+            "UID": "11d3c1c01e269d5c"
+          },
+          "InstalledVersion": "1.15.2",
+          "FixedVersion": "1.18.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://github.com/advisories/GHSA-6x33-pw7p-hmpq",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "Denial of Service in http-proxy",
+          "Description": "Versions of `http-proxy` prior to 1.18.1 are vulnerable to Denial of Service. An HTTP request with a long body triggers an `ERR_HTTP_HEADERS_SENT` unhandled exception that crashes the proxy server. This is only possible when the proxy server sets headers in the proxy request using the `proxyReq.setHeader` function.   \n\nFor a proxy server running on `http://localhost:3000`, the following curl request triggers the unhandled exception:  \n```curl -XPOST http://localhost:3000 -d \"$(python -c 'print(\"x\"*1025)')\"```\n\n\n## Recommendation\n\nUpgrade to version 1.18.1 or later",
+          "Severity": "HIGH",
+          "VendorSeverity": {
+            "ghsa": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://github.com/http-party/node-http-proxy/pull/1447/commits/4718119ffbe895aecd9be0d6430357d44b4c7fd3",
+            "https://github.com/http-party/node-http-proxy/pull/1447/files",
+            "https://www.npmjs.com/advisories/1486"
+          ]
+        },
+        {
+          "VulnerabilityID": "CVE-2021-3918",
+          "PkgID": "json-schema@0.2.3",
+          "PkgName": "json-schema",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/json-schema@0.2.3",
+            "UID": "fa3d19afc2388df1"
+          },
+          "InstalledVersion": "0.2.3",
+          "FixedVersion": "0.4.0",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-3918",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-json-schema: Prototype pollution vulnerability",
+          "Description": "json-schema is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
+          "Severity": "CRITICAL",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "ghsa": 4,
+            "nvd": 4,
+            "oracle-oval": 2,
+            "redhat": 3,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 7.5,
+              "V3Score": 9.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-3918",
+            "https://errata.almalinux.org/8/ALSA-2022-0350.html",
+            "https://github.com/kriszyp/json-schema",
+            "https://github.com/kriszyp/json-schema/commit/22f146111f541d9737e832823699ad3528ca7741",
+            "https://github.com/kriszyp/json-schema/commit/22f146111f541d9737e832823699ad3528ca7741 (v0.4.0)",
+            "https://github.com/kriszyp/json-schema/commit/b62f1da1ff5442f23443d6be6a92d00e65cba93a",
+            "https://github.com/kriszyp/json-schema/commit/f6f6a3b02d667aa4ba2d5d50cc19208c4462abfa",
+            "https://huntr.dev/bounties/bb6ccd63-f505-4e3a-b55f-cd2662c261a9",
+            "https://linux.oracle.com/cve/CVE-2021-3918.html",
+            "https://linux.oracle.com/errata/ELSA-2022-0350.html",
+            "https://lists.debian.org/debian-lts-announce/2022/12/msg00013.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-3918",
+            "https://ubuntu.com/security/notices/USN-6103-1",
+            "https://www.cve.org/CVERecord?id=CVE-2021-3918"
+          ],
+          "PublishedDate": "2021-11-13T09:15:06.737Z",
+          "LastModifiedDate": "2023-02-03T19:15:59.437Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-8203",
+          "PkgID": "lodash@4.17.15",
+          "PkgName": "lodash",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/lodash@4.17.15",
+            "UID": "463b715edb503cd0"
+          },
+          "InstalledVersion": "4.17.15",
+          "FixedVersion": "4.17.19",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-8203",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-lodash: prototype pollution in zipObjectDeep function",
+          "Description": "Prototype pollution attack when using _.zipObjectDeep in lodash before 4.17.20.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321",
+            "CWE-770"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H",
+              "V3Score": 7.4
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:N/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H",
+              "V2Score": 5.8,
+              "V3Score": 7.4
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H",
+              "V3Score": 7.4
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-8203",
+            "https://github.com/github/advisory-database/pull/2884",
+            "https://github.com/lodash/lodash",
+            "https://github.com/lodash/lodash/commit/c84fe82760fb2d3e03a63379b297a1cc1a2fce12",
+            "https://github.com/lodash/lodash/issues/4744",
+            "https://github.com/lodash/lodash/issues/4874",
+            "https://github.com/lodash/lodash/wiki/Changelog#v41719",
+            "https://hackerone.com/reports/712065",
+            "https://hackerone.com/reports/864701",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-8203",
+            "https://security.netapp.com/advisory/ntap-20200724-0006",
+            "https://security.netapp.com/advisory/ntap-20200724-0006/",
+            "https://web.archive.org/web/20210914001339/https://github.com/lodash/lodash/issues/4744",
+            "https://www.cve.org/CVERecord?id=CVE-2020-8203",
+            "https://www.npmjs.com/advisories/1523",
+            "https://www.oracle.com//security-alerts/cpujul2021.html",
+            "https://www.oracle.com/security-alerts/cpuApr2021.html",
+            "https://www.oracle.com/security-alerts/cpuapr2022.html",
+            "https://www.oracle.com/security-alerts/cpujan2022.html",
+            "https://www.oracle.com/security-alerts/cpuoct2021.html"
+          ],
+          "PublishedDate": "2020-07-15T17:15:11.797Z",
+          "LastModifiedDate": "2024-01-21T02:37:13.193Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-23337",
+          "PkgID": "lodash@4.17.15",
+          "PkgName": "lodash",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/lodash@4.17.15",
+            "UID": "463b715edb503cd0"
+          },
+          "InstalledVersion": "4.17.15",
+          "FixedVersion": "4.17.21",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-23337",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-lodash: command injection via template",
+          "Description": "Lodash versions prior to 4.17.21 are vulnerable to Command Injection via the template function.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-94"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.2
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:S/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 6.5,
+              "V3Score": 7.2
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 7.2
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-23337",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf",
+            "https://github.com/lodash/lodash",
+            "https://github.com/lodash/lodash/blob/ddfd9b11a0126db2302cb70ec9973b66baec0975/lodash.js#L14851",
+            "https://github.com/lodash/lodash/blob/ddfd9b11a0126db2302cb70ec9973b66baec0975/lodash.js%23L14851",
+            "https://github.com/lodash/lodash/commit/3469357cff396a26c363f8c1b5a91dde28ba4b1c",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-23337",
+            "https://security.netapp.com/advisory/ntap-20210312-0006",
+            "https://security.netapp.com/advisory/ntap-20210312-0006/",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGFUJIONWEBJARS-1074932",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARS-1074930",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWER-1074928",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWERGITHUBLODASH-1074931",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1074929",
+            "https://snyk.io/vuln/SNYK-JS-LODASH-1040724",
+            "https://www.cve.org/CVERecord?id=CVE-2021-23337",
+            "https://www.oracle.com//security-alerts/cpujul2021.html",
+            "https://www.oracle.com/security-alerts/cpujan2022.html",
+            "https://www.oracle.com/security-alerts/cpujul2022.html",
+            "https://www.oracle.com/security-alerts/cpuoct2021.html"
+          ],
+          "PublishedDate": "2021-02-15T13:15:12.56Z",
+          "LastModifiedDate": "2022-09-13T21:25:02.093Z"
+        },
+        {
+          "VulnerabilityID": "NSWG-ECO-516",
+          "PkgID": "lodash@4.17.15",
+          "PkgName": "lodash",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/lodash@4.17.15",
+            "UID": "463b715edb503cd0"
+          },
+          "InstalledVersion": "4.17.15",
+          "FixedVersion": "\u003e=4.17.19",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "nodejs-security-wg",
+          "PrimaryURL": "https://www.npmjs.com/advisories/1523",
+          "DataSource": {
+            "ID": "nodejs-security-wg",
+            "Name": "Node.js Ecosystem Security Working Group",
+            "URL": "https://github.com/nodejs/security-wg"
+          },
+          "Title": "Allocation of Resources Without Limits or Throttling",
+          "Description": "Prototype pollution attack (lodash)",
+          "Severity": "HIGH",
+          "VendorSeverity": {
+            "nodejs-security-wg": 3
+          },
+          "References": [
+            "https://github.com/lodash/lodash/pull/4759",
+            "https://hackerone.com/reports/712065",
+            "https://www.npmjs.com/advisories/1523"
+          ]
+        },
+        {
+          "VulnerabilityID": "CVE-2022-3517",
+          "PkgID": "minimatch@3.0.4",
+          "PkgName": "minimatch",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/minimatch@3.0.4",
+            "UID": "1138b87c9f8dc1bd"
+          },
+          "InstalledVersion": "3.0.4",
+          "FixedVersion": "3.0.5",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-3517",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-minimatch: ReDoS via the braceExpand function",
+          "Description": "A vulnerability was found in the minimatch package. This flaw allows a Regular Expression Denial of Service (ReDoS) when calling the braceExpand function with specific arguments, resulting in a Denial of Service.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333",
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "alma": 3,
+            "ghsa": 3,
+            "nvd": 3,
+            "oracle-oval": 3,
+            "redhat": 2,
+            "rocky": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:1743",
+            "https://access.redhat.com/security/cve/CVE-2022-3517",
+            "https://bugzilla.redhat.com/2134609",
+            "https://bugzilla.redhat.com/2156324",
+            "https://bugzilla.redhat.com/2165824",
+            "https://bugzilla.redhat.com/2168631",
+            "https://bugzilla.redhat.com/2170644",
+            "https://bugzilla.redhat.com/2171935",
+            "https://bugzilla.redhat.com/2172217",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2066009",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2130518",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2134609",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2140911",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2142808",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44906",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-3517",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-35256",
+            "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-43548",
+            "https://errata.almalinux.org/8/ALSA-2023-1743.html",
+            "https://errata.rockylinux.org/RLSA-2023:0321",
+            "https://github.com/grafana/grafana-image-renderer/issues/329",
+            "https://github.com/isaacs/minimatch",
+            "https://github.com/isaacs/minimatch/commit/a8763f4388e51956be62dc6025cec1126beeb5e6",
+            "https://github.com/isaacs/minimatch/commit/a8763f4388e51956be62dc6025cec1126beeb5e6 (v3.0.5)",
+            "https://github.com/nodejs/node/issues/42510",
+            "https://linux.oracle.com/cve/CVE-2022-3517.html",
+            "https://linux.oracle.com/errata/ELSA-2023-1743.html",
+            "https://lists.debian.org/debian-lts-announce/2023/01/msg00011.html",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MTEUUTNIEBHGKUKKLNUZSV7IEP6IP3Q3/",
+            "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/UM6XJ73Q3NAM5KSGCOKJ2ZIA6GUWUJLK/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/MTEUUTNIEBHGKUKKLNUZSV7IEP6IP3Q3",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/UM6XJ73Q3NAM5KSGCOKJ2ZIA6GUWUJLK",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-3517",
+            "https://ubuntu.com/security/notices/USN-6086-1",
+            "https://www.cve.org/CVERecord?id=CVE-2022-3517"
+          ],
+          "PublishedDate": "2022-10-17T20:15:09.937Z",
+          "LastModifiedDate": "2023-11-07T03:51:21.323Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-15256",
+          "PkgID": "object-path@0.11.4",
+          "PkgName": "object-path",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/object-path@0.11.4",
+            "UID": "5b42b7d009573dbd"
+          },
+          "InstalledVersion": "0.11.4",
+          "FixedVersion": "0.11.5",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-15256",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "object-path: Prototype pollution could result in DoS or RCE",
+          "Description": "A prototype pollution vulnerability has been found in `object-path` \u003c= 0.11.4 affecting the `set()` method. The vulnerability is limited to the `includeInheritedProps` mode (if version \u003e= 0.11.0 is used), which has to be explicitly enabled by creating a new instance of `object-path` and setting the option `includeInheritedProps: true`, or by using the default `withInheritedProps` instance. The default operating mode is not affected by the vulnerability if version \u003e= 0.11.0 is used. Any usage of `set()` in versions \u003c 0.11.0 is vulnerable. The issue is fixed in object-path version 0.11.5 As a workaround, don't use the `includeInheritedProps: true` options or the `withInheritedProps` instance if using a version \u003e= 0.11.0.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-20",
+            "CWE-471"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 4,
+            "redhat": 3,
+            "ubuntu": 1
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H",
+              "V3Score": 7.7
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 6.8,
+              "V3Score": 9.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-15256",
+            "https://github.com/mariocasciaro/object-path",
+            "https://github.com/mariocasciaro/object-path/commit/2be3354c6c46215c7635eb1b76d80f1319403c68",
+            "https://github.com/mariocasciaro/object-path/security/advisories/GHSA-cwx2-736x-mf6w",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-15256",
+            "https://ubuntu.com/security/notices/USN-5967-1",
+            "https://www.cve.org/CVERecord?id=CVE-2020-15256"
+          ],
+          "PublishedDate": "2020-10-19T22:15:13.017Z",
+          "LastModifiedDate": "2021-11-18T16:20:26.043Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-3805",
+          "PkgID": "object-path@0.11.4",
+          "PkgName": "object-path",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/object-path@0.11.4",
+            "UID": "5b42b7d009573dbd"
+          },
+          "InstalledVersion": "0.11.4",
+          "FixedVersion": "0.11.8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-3805",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-object-path: prototype pollution vulnerability",
+          "Description": "object-path is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-3805",
+            "https://github.com/mariocasciaro/object-path",
+            "https://github.com/mariocasciaro/object-path/commit/4f0903fd7c832d12ccbe0d9c3d7e25d985e9e884",
+            "https://github.com/mariocasciaro/object-path/commit/e6bb638ffdd431176701b3e9024f80050d0ef0a6",
+            "https://huntr.dev/bounties/571e3baf-7c46-46e3-9003-ba7e4e623053",
+            "https://lists.debian.org/debian-lts-announce/2023/01/msg00031.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-3805",
+            "https://ubuntu.com/security/notices/USN-5967-1",
+            "https://www.cve.org/CVERecord?id=CVE-2021-3805"
+          ],
+          "PublishedDate": "2021-09-17T06:15:06.623Z",
+          "LastModifiedDate": "2023-01-30T18:24:08.507Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-15256",
+          "PkgID": "object-path@0.9.2",
+          "PkgName": "object-path",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/object-path@0.9.2",
+            "UID": "69c9b53d30efd527"
+          },
+          "InstalledVersion": "0.9.2",
+          "FixedVersion": "0.11.5",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-15256",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "object-path: Prototype pollution could result in DoS or RCE",
+          "Description": "A prototype pollution vulnerability has been found in `object-path` \u003c= 0.11.4 affecting the `set()` method. The vulnerability is limited to the `includeInheritedProps` mode (if version \u003e= 0.11.0 is used), which has to be explicitly enabled by creating a new instance of `object-path` and setting the option `includeInheritedProps: true`, or by using the default `withInheritedProps` instance. The default operating mode is not affected by the vulnerability if version \u003e= 0.11.0 is used. Any usage of `set()` in versions \u003c 0.11.0 is vulnerable. The issue is fixed in object-path version 0.11.5 As a workaround, don't use the `includeInheritedProps: true` options or the `withInheritedProps` instance if using a version \u003e= 0.11.0.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-20",
+            "CWE-471"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 4,
+            "redhat": 3,
+            "ubuntu": 1
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H",
+              "V3Score": 7.7
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 6.8,
+              "V3Score": 9.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-15256",
+            "https://github.com/mariocasciaro/object-path",
+            "https://github.com/mariocasciaro/object-path/commit/2be3354c6c46215c7635eb1b76d80f1319403c68",
+            "https://github.com/mariocasciaro/object-path/security/advisories/GHSA-cwx2-736x-mf6w",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-15256",
+            "https://ubuntu.com/security/notices/USN-5967-1",
+            "https://www.cve.org/CVERecord?id=CVE-2020-15256"
+          ],
+          "PublishedDate": "2020-10-19T22:15:13.017Z",
+          "LastModifiedDate": "2021-11-18T16:20:26.043Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-3805",
+          "PkgID": "object-path@0.9.2",
+          "PkgName": "object-path",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/object-path@0.9.2",
+            "UID": "69c9b53d30efd527"
+          },
+          "InstalledVersion": "0.9.2",
+          "FixedVersion": "0.11.8",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-3805",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-object-path: prototype pollution vulnerability",
+          "Description": "object-path is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-3805",
+            "https://github.com/mariocasciaro/object-path",
+            "https://github.com/mariocasciaro/object-path/commit/4f0903fd7c832d12ccbe0d9c3d7e25d985e9e884",
+            "https://github.com/mariocasciaro/object-path/commit/e6bb638ffdd431176701b3e9024f80050d0ef0a6",
+            "https://huntr.dev/bounties/571e3baf-7c46-46e3-9003-ba7e4e623053",
+            "https://lists.debian.org/debian-lts-announce/2023/01/msg00031.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-3805",
+            "https://ubuntu.com/security/notices/USN-5967-1",
+            "https://www.cve.org/CVERecord?id=CVE-2021-3805"
+          ],
+          "PublishedDate": "2021-09-17T06:15:06.623Z",
+          "LastModifiedDate": "2023-01-30T18:24:08.507Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-24999",
+          "PkgID": "qs@6.2.3",
+          "PkgName": "qs",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/qs@6.2.3",
+            "UID": "67823e64b12f5140"
+          },
+          "InstalledVersion": "6.2.3",
+          "FixedVersion": "6.10.3, 6.9.7, 6.8.3, 6.7.3, 6.6.1, 6.5.3, 6.4.1, 6.3.3, 6.2.4",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-24999",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "express: \"qs\" prototype poisoning causes the hang of the node process",
+          "Description": "qs before 6.10.3, as used in Express before 4.17.3 and other products, allows attackers to cause a Node process hang for an Express application because an __ proto__ key can be used. In many typical Express use cases, an unauthenticated remote attacker can place the attack payload in the query string of the URL that is used to visit the application, such as a[__proto__]=b\u0026a[__proto__]\u0026a[length]=100000000. The fix was backported to qs 6.9.7, 6.8.3, 6.7.3, 6.6.1, 6.5.3, 6.4.1, 6.3.3, and 6.2.4 (and therefore Express 4.17.3, which has \"deps: qs@6.9.7\" in its release description, is not vulnerable).",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "ghsa": 3,
+            "nvd": 3,
+            "oracle-oval": 2,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:0050",
+            "https://access.redhat.com/security/cve/CVE-2022-24999",
+            "https://bugzilla.redhat.com/2044591",
+            "https://bugzilla.redhat.com/2066009",
+            "https://bugzilla.redhat.com/2134609",
+            "https://bugzilla.redhat.com/2140911",
+            "https://bugzilla.redhat.com/2150323",
+            "https://errata.almalinux.org/8/ALSA-2023-0050.html",
+            "https://github.com/expressjs/express/releases/tag/4.17.3",
+            "https://github.com/ljharb/qs",
+            "https://github.com/ljharb/qs/commit/4310742efbd8c03f6495f07906b45213da0a32ec",
+            "https://github.com/ljharb/qs/commit/727ef5d34605108acb3513f72d5435972ed15b68",
+            "https://github.com/ljharb/qs/commit/73205259936317b40f447c5cdb71c5b341848e1b",
+            "https://github.com/ljharb/qs/commit/8b4cc14cda94a5c89341b77e5fe435ec6c41be2d",
+            "https://github.com/ljharb/qs/commit/ba24e74dd17931f825adb52f5633e48293b584e1",
+            "https://github.com/ljharb/qs/commit/e799ba57e573a30c14b67c1889c7c04d508b9105",
+            "https://github.com/ljharb/qs/commit/ed0f5dcbef4b168a8ae299d78b1e4a2e9b1baf1f",
+            "https://github.com/ljharb/qs/commit/f945393cfe442fe8c6e62b4156fd35452c0686ee",
+            "https://github.com/ljharb/qs/commit/fc3682776670524a42e19709ec4a8138d0d7afda",
+            "https://github.com/ljharb/qs/pull/428",
+            "https://github.com/n8tz/CVE-2022-24999",
+            "https://linux.oracle.com/cve/CVE-2022-24999.html",
+            "https://linux.oracle.com/errata/ELSA-2023-0050.html",
+            "https://lists.debian.org/debian-lts-announce/2023/01/msg00039.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-24999",
+            "https://security.netapp.com/advisory/ntap-20230908-0005/",
+            "https://www.cve.org/CVERecord?id=CVE-2022-24999"
+          ],
+          "PublishedDate": "2022-11-26T22:15:10.153Z",
+          "LastModifiedDate": "2023-09-08T17:15:15.687Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-24999",
+          "PkgID": "qs@6.5.2",
+          "PkgName": "qs",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/qs@6.5.2",
+            "UID": "4edf2745432227eb"
+          },
+          "InstalledVersion": "6.5.2",
+          "FixedVersion": "6.10.3, 6.9.7, 6.8.3, 6.7.3, 6.6.1, 6.5.3, 6.4.1, 6.3.3, 6.2.4",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-24999",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "express: \"qs\" prototype poisoning causes the hang of the node process",
+          "Description": "qs before 6.10.3, as used in Express before 4.17.3 and other products, allows attackers to cause a Node process hang for an Express application because an __ proto__ key can be used. In many typical Express use cases, an unauthenticated remote attacker can place the attack payload in the query string of the URL that is used to visit the application, such as a[__proto__]=b\u0026a[__proto__]\u0026a[length]=100000000. The fix was backported to qs 6.9.7, 6.8.3, 6.7.3, 6.6.1, 6.5.3, 6.4.1, 6.3.3, and 6.2.4 (and therefore Express 4.17.3, which has \"deps: qs@6.9.7\" in its release description, is not vulnerable).",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "ghsa": 3,
+            "nvd": 3,
+            "oracle-oval": 2,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/errata/RHSA-2023:0050",
+            "https://access.redhat.com/security/cve/CVE-2022-24999",
+            "https://bugzilla.redhat.com/2044591",
+            "https://bugzilla.redhat.com/2066009",
+            "https://bugzilla.redhat.com/2134609",
+            "https://bugzilla.redhat.com/2140911",
+            "https://bugzilla.redhat.com/2150323",
+            "https://errata.almalinux.org/8/ALSA-2023-0050.html",
+            "https://github.com/expressjs/express/releases/tag/4.17.3",
+            "https://github.com/ljharb/qs",
+            "https://github.com/ljharb/qs/commit/4310742efbd8c03f6495f07906b45213da0a32ec",
+            "https://github.com/ljharb/qs/commit/727ef5d34605108acb3513f72d5435972ed15b68",
+            "https://github.com/ljharb/qs/commit/73205259936317b40f447c5cdb71c5b341848e1b",
+            "https://github.com/ljharb/qs/commit/8b4cc14cda94a5c89341b77e5fe435ec6c41be2d",
+            "https://github.com/ljharb/qs/commit/ba24e74dd17931f825adb52f5633e48293b584e1",
+            "https://github.com/ljharb/qs/commit/e799ba57e573a30c14b67c1889c7c04d508b9105",
+            "https://github.com/ljharb/qs/commit/ed0f5dcbef4b168a8ae299d78b1e4a2e9b1baf1f",
+            "https://github.com/ljharb/qs/commit/f945393cfe442fe8c6e62b4156fd35452c0686ee",
+            "https://github.com/ljharb/qs/commit/fc3682776670524a42e19709ec4a8138d0d7afda",
+            "https://github.com/ljharb/qs/pull/428",
+            "https://github.com/n8tz/CVE-2022-24999",
+            "https://linux.oracle.com/cve/CVE-2022-24999.html",
+            "https://linux.oracle.com/errata/ELSA-2023-0050.html",
+            "https://lists.debian.org/debian-lts-announce/2023/01/msg00039.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-24999",
+            "https://security.netapp.com/advisory/ntap-20230908-0005/",
+            "https://www.cve.org/CVERecord?id=CVE-2022-24999"
+          ],
+          "PublishedDate": "2022-11-26T22:15:10.153Z",
+          "LastModifiedDate": "2023-09-08T17:15:15.687Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-38355",
+          "PkgID": "socket.io@2.1.1",
+          "PkgName": "socket.io",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io@2.1.1",
+            "UID": "54f0f18d7f3a63d7"
+          },
+          "InstalledVersion": "2.1.1",
+          "FixedVersion": "2.5.1, 4.6.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-38355",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "socket.io: Unhandled 'error' event",
+          "Description": "Socket.IO is an open source, real-time, bidirectional, event-based, communication framework. A specially crafted Socket.IO packet can trigger an uncaught exception on the Socket.IO server, thus killing the Node.js process. This issue is fixed by commit `15af22fc22` which has been included in `socket.io@4.6.2` (released in May 2023). The fix was backported in the 2.x branch as well with commit `d30630ba10`. Users are advised to upgrade. Users unable to upgrade may attach a listener for the \"error\" event to catch these errors.\n",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-20",
+            "CWE-754"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-38355",
+            "https://github.com/socketio/socket.io",
+            "https://github.com/socketio/socket.io/commit/15af22fc22bc6030fcead322c106f07640336115",
+            "https://github.com/socketio/socket.io/commit/d30630ba10562bf987f4d2b42440fc41a828119c",
+            "https://github.com/socketio/socket.io/security/advisories/GHSA-25hc-qcg6-38wj",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-38355",
+            "https://www.cve.org/CVERecord?id=CVE-2024-38355"
+          ],
+          "PublishedDate": "2024-06-19T20:15:11.18Z",
+          "LastModifiedDate": "2024-06-20T12:43:25.663Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-2421",
+          "PkgID": "socket.io-parser@3.2.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.2.0",
+            "UID": "d9c5554ccae1e811"
+          },
+          "InstalledVersion": "3.2.0",
+          "FixedVersion": "4.0.5, 4.2.1, 3.3.3, 3.4.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-2421",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "Insufficient validation when decoding a Socket.IO packet",
+          "Description": "Due to improper type validation in attachment parsing the Socket.io js library, it is possible to overwrite the _placeholder object which allows an attacker to place references to functions at arbitrary places in the resulting query object.",
+          "Severity": "CRITICAL",
+          "CweIDs": [
+            "CWE-89"
+          ],
+          "VendorSeverity": {
+            "ghsa": 4,
+            "nvd": 4
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            }
+          },
+          "References": [
+            "https://csirt.divd.nl/CVE-2022-2421",
+            "https://csirt.divd.nl/DIVD-2022-00045",
+            "https://csirt.divd.nl/cases/DIVD-2022-00045",
+            "https://csirt.divd.nl/cves/CVE-2022-2421",
+            "https://github.com/socketio/socket.io-parser",
+            "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+            "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+            "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+            "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-2421"
+          ],
+          "PublishedDate": "2022-10-26T10:15:16.78Z",
+          "LastModifiedDate": "2024-01-02T19:15:09.597Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-36049",
+          "PkgID": "socket.io-parser@3.2.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.2.0",
+            "UID": "d9c5554ccae1e811"
+          },
+          "InstalledVersion": "3.2.0",
+          "FixedVersion": "3.3.2, 3.4.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-36049",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "yarnpkg-socket.io-parser: a denial of service (memory consumption) via a large packet because a concatenation approach is used",
+          "Description": "socket.io-parser before 3.4.1 allows attackers to cause a denial of service (memory consumption) via a large packet because a concatenation approach is used.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-770"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-36049",
+            "https://blog.caller.xyz/socketio-engineio-dos",
+            "https://blog.caller.xyz/socketio-engineio-dos/",
+            "https://github.com/bcaller/kill-engine-io",
+            "https://github.com/socketio/socket.io-parser/commit/dcb942d24db97162ad16a67c2a0cf30875342d55",
+            "https://github.com/socketio/socket.io-parser/releases/tag/3.3.2",
+            "https://github.com/socketio/socket.io-parser/releases/tag/3.4.1",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-36049",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1056753",
+            "https://www.cve.org/CVERecord?id=CVE-2020-36049",
+            "https://www.npmjs.com/package/socket.io-parser"
+          ],
+          "PublishedDate": "2021-01-08T00:15:11.187Z",
+          "LastModifiedDate": "2021-07-21T11:39:23.747Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-32695",
+          "PkgID": "socket.io-parser@3.2.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.2.0",
+            "UID": "d9c5554ccae1e811"
+          },
+          "InstalledVersion": "3.2.0",
+          "FixedVersion": "4.2.3, 3.4.3, 3.3.4",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-32695",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "socket.io parser is a socket.io encoder and decoder written in JavaScr ...",
+          "Description": "socket.io parser is a socket.io encoder and decoder written in JavaScript complying with version 5 of socket.io-protocol. A specially crafted Socket.IO packet can trigger an uncaught exception on the Socket.IO server, thus killing the Node.js process. A patch has been released in version 4.2.3.\n\n",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-754",
+            "CWE-20"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://github.com/socketio/socket.io-parser",
+            "https://github.com/socketio/socket.io-parser/commit/1c220ddbf45ea4b44bc8dbf6f9ae245f672ba1b9",
+            "https://github.com/socketio/socket.io-parser/commit/2dc3c92622dad113b8676be06f23b1ed46b02ced",
+            "https://github.com/socketio/socket.io-parser/commit/3b78117bf6ba7e99d7a5cfc1ba54d0477554a7f3",
+            "https://github.com/socketio/socket.io-parser/commit/ee006607495eca4ec7262ad080dd3a91439a5ba4",
+            "https://github.com/socketio/socket.io-parser/releases/tag/4.2.3",
+            "https://github.com/socketio/socket.io-parser/security/advisories/GHSA-cqmj-92xf-r6r9",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-32695"
+          ],
+          "PublishedDate": "2023-05-27T16:15:09.433Z",
+          "LastModifiedDate": "2023-06-05T15:54:48.487Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-2421",
+          "PkgID": "socket.io-parser@3.3.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.3.0",
+            "UID": "38d652541a4bacdd"
+          },
+          "InstalledVersion": "3.3.0",
+          "FixedVersion": "4.0.5, 4.2.1, 3.3.3, 3.4.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-2421",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "Insufficient validation when decoding a Socket.IO packet",
+          "Description": "Due to improper type validation in attachment parsing the Socket.io js library, it is possible to overwrite the _placeholder object which allows an attacker to place references to functions at arbitrary places in the resulting query object.",
+          "Severity": "CRITICAL",
+          "CweIDs": [
+            "CWE-89"
+          ],
+          "VendorSeverity": {
+            "ghsa": 4,
+            "nvd": 4
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            }
+          },
+          "References": [
+            "https://csirt.divd.nl/CVE-2022-2421",
+            "https://csirt.divd.nl/DIVD-2022-00045",
+            "https://csirt.divd.nl/cases/DIVD-2022-00045",
+            "https://csirt.divd.nl/cves/CVE-2022-2421",
+            "https://github.com/socketio/socket.io-parser",
+            "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+            "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+            "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+            "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-2421"
+          ],
+          "PublishedDate": "2022-10-26T10:15:16.78Z",
+          "LastModifiedDate": "2024-01-02T19:15:09.597Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-36049",
+          "PkgID": "socket.io-parser@3.3.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.3.0",
+            "UID": "38d652541a4bacdd"
+          },
+          "InstalledVersion": "3.3.0",
+          "FixedVersion": "3.3.2, 3.4.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-36049",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "yarnpkg-socket.io-parser: a denial of service (memory consumption) via a large packet because a concatenation approach is used",
+          "Description": "socket.io-parser before 3.4.1 allows attackers to cause a denial of service (memory consumption) via a large packet because a concatenation approach is used.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-770"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-36049",
+            "https://blog.caller.xyz/socketio-engineio-dos",
+            "https://blog.caller.xyz/socketio-engineio-dos/",
+            "https://github.com/bcaller/kill-engine-io",
+            "https://github.com/socketio/socket.io-parser/commit/dcb942d24db97162ad16a67c2a0cf30875342d55",
+            "https://github.com/socketio/socket.io-parser/releases/tag/3.3.2",
+            "https://github.com/socketio/socket.io-parser/releases/tag/3.4.1",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-36049",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1056753",
+            "https://www.cve.org/CVERecord?id=CVE-2020-36049",
+            "https://www.npmjs.com/package/socket.io-parser"
+          ],
+          "PublishedDate": "2021-01-08T00:15:11.187Z",
+          "LastModifiedDate": "2021-07-21T11:39:23.747Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2023-32695",
+          "PkgID": "socket.io-parser@3.3.0",
+          "PkgName": "socket.io-parser",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/socket.io-parser@3.3.0",
+            "UID": "38d652541a4bacdd"
+          },
+          "InstalledVersion": "3.3.0",
+          "FixedVersion": "4.2.3, 3.4.3, 3.3.4",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2023-32695",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "socket.io parser is a socket.io encoder and decoder written in JavaScr ...",
+          "Description": "socket.io parser is a socket.io encoder and decoder written in JavaScript complying with version 5 of socket.io-protocol. A specially crafted Socket.IO packet can trigger an uncaught exception on the Socket.IO server, thus killing the Node.js process. A patch has been released in version 4.2.3.\n\n",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-754",
+            "CWE-20"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://github.com/socketio/socket.io-parser",
+            "https://github.com/socketio/socket.io-parser/commit/1c220ddbf45ea4b44bc8dbf6f9ae245f672ba1b9",
+            "https://github.com/socketio/socket.io-parser/commit/2dc3c92622dad113b8676be06f23b1ed46b02ced",
+            "https://github.com/socketio/socket.io-parser/commit/3b78117bf6ba7e99d7a5cfc1ba54d0477554a7f3",
+            "https://github.com/socketio/socket.io-parser/commit/ee006607495eca4ec7262ad080dd3a91439a5ba4",
+            "https://github.com/socketio/socket.io-parser/releases/tag/4.2.3",
+            "https://github.com/socketio/socket.io-parser/security/advisories/GHSA-cqmj-92xf-r6r9",
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-32695"
+          ],
+          "PublishedDate": "2023-05-27T16:15:09.433Z",
+          "LastModifiedDate": "2023-06-05T15:54:48.487Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-7733",
+          "PkgID": "ua-parser-js@0.7.17",
+          "PkgName": "ua-parser-js",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ua-parser-js@0.7.17",
+            "UID": "b053025d41401519"
+          },
+          "InstalledVersion": "0.7.17",
+          "FixedVersion": "0.7.22",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-7733",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ua-parser-js: Regular expression denial of service via the regex",
+          "Description": "The package ua-parser-js before 0.7.22 are vulnerable to Regular Expression Denial of Service (ReDoS) via the regex for Redmi Phones and Mi Pad Tablets UA.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-400"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 1
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-7733",
+            "https://github.com/faisalman/ua-parser-js/commit/233d3bae22a795153a7e6638887ce159c63e557d",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-7733",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWERGITHUBFAISALMAN-674666",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-674665",
+            "https://snyk.io/vuln/SNYK-JS-UAPARSERJS-610226",
+            "https://www.cve.org/CVERecord?id=CVE-2020-7733",
+            "https://www.oracle.com//security-alerts/cpujul2021.html"
+          ],
+          "PublishedDate": "2020-09-16T14:15:15.033Z",
+          "LastModifiedDate": "2022-10-07T18:37:17.403Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-7793",
+          "PkgID": "ua-parser-js@0.7.17",
+          "PkgName": "ua-parser-js",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ua-parser-js@0.7.17",
+            "UID": "b053025d41401519"
+          },
+          "InstalledVersion": "0.7.17",
+          "FixedVersion": "0.7.23",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-7793",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ua-parser-js: ReDoS in multiple regexes",
+          "Description": "The package ua-parser-js before 0.7.23 are vulnerable to Regular Expression Denial of Service (ReDoS) in multiple regexes (see linked commit for more info).",
+          "Severity": "HIGH",
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 1,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-7793",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-637483.pdf",
+            "https://github.com/faisalman/ua-parser-js/commit/6d1f26df051ba681463ef109d36c9cf0f7e32b18",
+            "https://github.com/faisalman/ua-parser-js/commit/6d1f26df051ba681463ef109d36c9cf0f7e32b18 (0.7.23)",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-7793",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSBOWERGITHUBFAISALMAN-1050388",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1050387",
+            "https://snyk.io/vuln/SNYK-JS-UAPARSERJS-1023599",
+            "https://www.cve.org/CVERecord?id=CVE-2020-7793"
+          ],
+          "PublishedDate": "2020-12-11T14:15:11.283Z",
+          "LastModifiedDate": "2022-09-13T21:23:36.8Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-27292",
+          "PkgID": "ua-parser-js@0.7.17",
+          "PkgName": "ua-parser-js",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ua-parser-js@0.7.17",
+            "UID": "b053025d41401519"
+          },
+          "InstalledVersion": "0.7.17",
+          "FixedVersion": "0.7.24",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-27292",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ua-parser-js: ReDoS via malicious User-Agent header",
+          "Description": "ua-parser-js \u003e= 0.7.14, fixed in 0.7.24, uses a regular expression which is vulnerable to denial of service. If an attacker sends a malicious User-Agent header, ua-parser-js will get stuck processing it for an extended period of time.",
+          "Severity": "HIGH",
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2,
+            "ubuntu": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V2Score": 5,
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-27292",
+            "https://gist.github.com/b-c-ds/6941d80d6b4e694df4bc269493b7be76",
+            "https://github.com/faisalman/ua-parser-js/commit/809439e20e273ce0d25c1d04e111dcf6011eb566",
+            "https://github.com/pygments/pygments/commit/2e7e8c4a7b318f4032493773732754e418279a14",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-27292",
+            "https://www.cve.org/CVERecord?id=CVE-2021-27292"
+          ],
+          "PublishedDate": "2021-03-17T13:15:15.2Z",
+          "LastModifiedDate": "2021-03-23T20:21:17.347Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2022-25927",
+          "PkgID": "ua-parser-js@0.7.17",
+          "PkgName": "ua-parser-js",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ua-parser-js@0.7.17",
+            "UID": "b053025d41401519"
+          },
+          "InstalledVersion": "0.7.17",
+          "FixedVersion": "0.7.33, 1.0.33",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2022-25927",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "ua-parser-js: ReDoS vulnerability via the trim() function",
+          "Description": "Versions of the package ua-parser-js from 0.7.30 and before 0.7.33, from 0.8.1 and before 1.0.33 are vulnerable to Regular Expression Denial of Service (ReDoS) via the trim() function.\r\r",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1333"
+          ],
+          "VendorSeverity": {
+            "ghsa": 3,
+            "nvd": 3,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "nvd": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2022-25927",
+            "https://github.com/faisalman/ua-parser-js",
+            "https://github.com/faisalman/ua-parser-js/commit/a6140a17dd0300a35cfc9cff999545f267889411",
+            "https://github.com/faisalman/ua-parser-js/security/advisories/GHSA-fhg7-m89q-25r3",
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-25927",
+            "https://security.snyk.io/vuln/SNYK-JS-UAPARSERJS-3244450",
+            "https://www.cve.org/CVERecord?id=CVE-2022-25927"
+          ],
+          "PublishedDate": "2023-01-26T21:15:32.107Z",
+          "LastModifiedDate": "2023-11-07T03:44:53.32Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-37890",
+          "PkgID": "ws@3.3.3",
+          "PkgName": "ws",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ws@3.3.3",
+            "UID": "be23677e9b6c0fb1"
+          },
+          "InstalledVersion": "3.3.3",
+          "FixedVersion": "5.2.4, 6.2.3, 7.5.10, 8.17.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-37890",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ws: denial of service when handling a request with many HTTP headers",
+          "Description": "ws is an open source WebSocket client and server for Node.js. A request with a number of headers exceeding theserver.maxHeadersCount threshold could be used to crash a ws server. The vulnerability was fixed in ws@8.17.1 (e55e510) and backported to ws@7.5.10 (22c2876), ws@6.2.3 (eeb76d3), and ws@5.2.4 (4abd8f6). In vulnerable versions of ws, the issue can be mitigated in the following ways: 1. Reduce the maximum allowed length of the request headers using the --max-http-header-size=size and/or the maxHeaderSize options so that no more headers than the server.maxHeadersCount limit can be sent. 2. Set server.maxHeadersCount to 0 so that no limit is applied.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-476"
+          ],
+          "VendorSeverity": {
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-37890",
+            "https://github.com/websockets/ws",
+            "https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f",
+            "https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e",
+            "https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c",
+            "https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63",
+            "https://github.com/websockets/ws/issues/2230",
+            "https://github.com/websockets/ws/pull/2231",
+            "https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q",
+            "https://nodejs.org/api/http.html#servermaxheaderscount",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-37890",
+            "https://www.cve.org/CVERecord?id=CVE-2024-37890"
+          ],
+          "PublishedDate": "2024-06-17T20:15:13.203Z",
+          "LastModifiedDate": "2024-06-20T12:44:22.977Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-37890",
+          "PkgID": "ws@6.1.4",
+          "PkgName": "ws",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ws@6.1.4",
+            "UID": "3079b7ea5eac2818"
+          },
+          "InstalledVersion": "6.1.4",
+          "FixedVersion": "5.2.4, 6.2.3, 7.5.10, 8.17.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-37890",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ws: denial of service when handling a request with many HTTP headers",
+          "Description": "ws is an open source WebSocket client and server for Node.js. A request with a number of headers exceeding theserver.maxHeadersCount threshold could be used to crash a ws server. The vulnerability was fixed in ws@8.17.1 (e55e510) and backported to ws@7.5.10 (22c2876), ws@6.2.3 (eeb76d3), and ws@5.2.4 (4abd8f6). In vulnerable versions of ws, the issue can be mitigated in the following ways: 1. Reduce the maximum allowed length of the request headers using the --max-http-header-size=size and/or the maxHeaderSize options so that no more headers than the server.maxHeadersCount limit can be sent. 2. Set server.maxHeadersCount to 0 so that no limit is applied.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-476"
+          ],
+          "VendorSeverity": {
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-37890",
+            "https://github.com/websockets/ws",
+            "https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f",
+            "https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e",
+            "https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c",
+            "https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63",
+            "https://github.com/websockets/ws/issues/2230",
+            "https://github.com/websockets/ws/pull/2231",
+            "https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q",
+            "https://nodejs.org/api/http.html#servermaxheaderscount",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-37890",
+            "https://www.cve.org/CVERecord?id=CVE-2024-37890"
+          ],
+          "PublishedDate": "2024-06-17T20:15:13.203Z",
+          "LastModifiedDate": "2024-06-20T12:44:22.977Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-37890",
+          "PkgID": "ws@7.3.0",
+          "PkgName": "ws",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/ws@7.3.0",
+            "UID": "869a258527cdb39d"
+          },
+          "InstalledVersion": "7.3.0",
+          "FixedVersion": "5.2.4, 6.2.3, 7.5.10, 8.17.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-37890",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-ws: denial of service when handling a request with many HTTP headers",
+          "Description": "ws is an open source WebSocket client and server for Node.js. A request with a number of headers exceeding theserver.maxHeadersCount threshold could be used to crash a ws server. The vulnerability was fixed in ws@8.17.1 (e55e510) and backported to ws@7.5.10 (22c2876), ws@6.2.3 (eeb76d3), and ws@5.2.4 (4abd8f6). In vulnerable versions of ws, the issue can be mitigated in the following ways: 1. Reduce the maximum allowed length of the request headers using the --max-http-header-size=size and/or the maxHeaderSize options so that no more headers than the server.maxHeadersCount limit can be sent. 2. Set server.maxHeadersCount to 0 so that no limit is applied.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-476"
+          ],
+          "VendorSeverity": {
+            "cbl-mariner": 3,
+            "ghsa": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+              "V3Score": 7.5
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-37890",
+            "https://github.com/websockets/ws",
+            "https://github.com/websockets/ws/commit/22c28763234aa75a7e1b76f5c01c181260d7917f",
+            "https://github.com/websockets/ws/commit/4abd8f6de4b0b65ef80b3ff081989479ed93377e",
+            "https://github.com/websockets/ws/commit/e55e5106f10fcbaac37cfa89759e4cc0d073a52c",
+            "https://github.com/websockets/ws/commit/eeb76d313e2a00dd5247ca3597bba7877d064a63",
+            "https://github.com/websockets/ws/issues/2230",
+            "https://github.com/websockets/ws/pull/2231",
+            "https://github.com/websockets/ws/security/advisories/GHSA-3h5v-q93c-6h6q",
+            "https://nodejs.org/api/http.html#servermaxheaderscount",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-37890",
+            "https://www.cve.org/CVERecord?id=CVE-2024-37890"
+          ],
+          "PublishedDate": "2024-06-17T20:15:13.203Z",
+          "LastModifiedDate": "2024-06-20T12:44:22.977Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-28502",
+          "PkgID": "xmlhttprequest-ssl@1.5.5",
+          "PkgName": "xmlhttprequest-ssl",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/xmlhttprequest-ssl@1.5.5",
+            "UID": "1a1c763bfa6319cd"
+          },
+          "InstalledVersion": "1.5.5",
+          "FixedVersion": "1.6.2",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-28502",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-xmlhttprequest: Code injection through user input to xhr.send",
+          "Description": "This affects the package xmlhttprequest before 1.7.0; all versions of package xmlhttprequest-ssl. Provided requests are sent synchronously (async=False on xhr.open), malicious user input flowing into xhr.send could result in arbitrary code being injected and run.",
+          "Severity": "CRITICAL",
+          "CweIDs": [
+            "CWE-94"
+          ],
+          "VendorSeverity": {
+            "ghsa": 4,
+            "nvd": 3,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 9.8
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 6.8,
+              "V3Score": 8.1
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V3Score": 8.1
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-28502",
+            "https://github.com/driverdan/node-XMLHttpRequest/blob/1.6.0/lib/XMLHttpRequest.js#L480",
+            "https://github.com/driverdan/node-XMLHttpRequest/blob/1.6.0/lib/XMLHttpRequest.js%23L480",
+            "https://github.com/driverdan/node-XMLHttpRequest/commit/983cfc244c7567ad6a59e366e55a8037e0497fe6",
+            "https://github.com/mjwwit/node-XMLHttpRequest/blob/ae38832a0f1347c5e96dda665402509a3458e302/lib/XMLHttpRequest.js#L531",
+            "https://github.com/mjwwit/node-XMLHttpRequest/commit/ee1e81fc67729c7c0eba5537ed7fe1e30a6b3291",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-28502",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1082937",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1082938",
+            "https://snyk.io/vuln/SNYK-JS-XMLHTTPREQUEST-1082935",
+            "https://snyk.io/vuln/SNYK-JS-XMLHTTPREQUESTSSL-1082936",
+            "https://www.cve.org/CVERecord?id=CVE-2020-28502"
+          ],
+          "PublishedDate": "2021-03-05T18:15:12.83Z",
+          "LastModifiedDate": "2021-03-16T16:12:47.017Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2021-31597",
+          "PkgID": "xmlhttprequest-ssl@1.5.5",
+          "PkgName": "xmlhttprequest-ssl",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/xmlhttprequest-ssl@1.5.5",
+            "UID": "1a1c763bfa6319cd"
+          },
+          "InstalledVersion": "1.5.5",
+          "FixedVersion": "1.6.1",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2021-31597",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "xmlhttprequest-ssl: SSL certificate validation disabled by default",
+          "Description": "The xmlhttprequest-ssl package before 1.6.1 for Node.js disables SSL certificate validation by default, because rejectUnauthorized (when the property exists but is undefined) is considered to be false within the https.request function of Node.js. In other words, no certificate is ever rejected.",
+          "Severity": "CRITICAL",
+          "CweIDs": [
+            "CWE-295"
+          ],
+          "VendorSeverity": {
+            "ghsa": 4,
+            "nvd": 4,
+            "redhat": 3
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L",
+              "V3Score": 9.4
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L",
+              "V2Score": 7.5,
+              "V3Score": 9.4
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:L",
+              "V3Score": 9.4
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2021-31597",
+            "https://github.com/mjwwit/node-XMLHttpRequest/commit/bf53329b61ca6afc5d28f6b8d2dc2e3ca740a9b2",
+            "https://github.com/mjwwit/node-XMLHttpRequest/compare/v1.6.0...1.6.1",
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-31597",
+            "https://people.kingsds.network/wesgarland/xmlhttprequest-ssl-vuln.txt",
+            "https://security.netapp.com/advisory/ntap-20210618-0004",
+            "https://security.netapp.com/advisory/ntap-20210618-0004/",
+            "https://www.cve.org/CVERecord?id=CVE-2021-31597"
+          ],
+          "PublishedDate": "2021-04-23T00:15:08.283Z",
+          "LastModifiedDate": "2021-12-08T20:27:09.257Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2020-7774",
+          "PkgID": "y18n@3.2.1",
+          "PkgName": "y18n",
+          "PkgIdentifier": {
+            "PURL": "pkg:npm/y18n@3.2.1",
+            "UID": "9a06168ba609b0f7"
+          },
+          "InstalledVersion": "3.2.1",
+          "FixedVersion": "3.2.2, 4.0.1, 5.0.5",
+          "Status": "fixed",
+          "Layer": {},
+          "SeveritySource": "ghsa",
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2020-7774",
+          "DataSource": {
+            "ID": "ghsa",
+            "Name": "GitHub Security Advisory npm",
+            "URL": "https://github.com/advisories?query=type%3Areviewed+ecosystem%3Anpm"
+          },
+          "Title": "nodejs-y18n: prototype pollution vulnerability",
+          "Description": "The package y18n before 3.2.2, 4.0.1 and 5.0.5, is vulnerable to Prototype Pollution.",
+          "Severity": "HIGH",
+          "CweIDs": [
+            "CWE-1321"
+          ],
+          "VendorSeverity": {
+            "alma": 2,
+            "ghsa": 3,
+            "nvd": 4,
+            "oracle-oval": 2,
+            "redhat": 2
+          },
+          "CVSS": {
+            "ghsa": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            },
+            "nvd": {
+              "V2Vector": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+              "V2Score": 7.5,
+              "V3Score": 9.8
+            },
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+              "V3Score": 7.3
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2020-7774",
+            "https://cert-portal.siemens.com/productcert/pdf/ssa-389290.pdf",
+            "https://errata.almalinux.org/8/ALSA-2021-0551.html",
+            "https://github.com/yargs/y18n",
+            "https://github.com/yargs/y18n/commit/90401eea9062ad498f4f792e3fff8008c4c193a3",
+            "https://github.com/yargs/y18n/commit/a9ac604abf756dec9687be3843e2c93bfe581f25",
+            "https://github.com/yargs/y18n/issues/96",
+            "https://github.com/yargs/y18n/pull/108",
+            "https://linux.oracle.com/cve/CVE-2020-7774.html",
+            "https://linux.oracle.com/errata/ELSA-2021-0551.html",
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-7774",
+            "https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1038306",
+            "https://snyk.io/vuln/SNYK-JS-Y18N-1021887",
+            "https://www.cve.org/CVERecord?id=CVE-2020-7774",
+            "https://www.oracle.com/security-alerts/cpuApr2021.html"
+          ],
+          "PublishedDate": "2020-11-17T13:15:12.633Z",
+          "LastModifiedDate": "2022-12-02T19:40:49.217Z"
+        }
+      ]
+    }
+  ]
+}
