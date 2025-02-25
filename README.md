@@ -72,7 +72,7 @@ jobs:
 ```
 ### Refere the FileType.md
 
-For more details on the supported file types, please refer to the [Filetype.md](./FileType.md) file.
+For more details on the supported file types, please refer to the [Filetype.md](./Filetype.md) file.
 
 ## Reports & Feedback
 
